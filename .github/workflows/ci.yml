@@ -86,7 +86,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release with DMG
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           tag_name: v${{ steps.get_version.outputs.version }}-${{ github.run_number }}

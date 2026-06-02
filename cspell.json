@@ -1,0 +1,31 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "diskanalyzer",
+    "dongitran",
+    "sunburst",
+    "treemap",
+    "APFS",
+    "jwalk",
+    "sysinfo",
+    "tauri",
+    "sveltekit",
+    "FullDiskAccess",
+    "kTCCServiceSystemPolicyAllFiles",
+    "entitlements",
+    "icns",
+    "aarch64",
+    "x86_64"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "target/**",
+    "build/**",
+    "dist/**",
+    "src-tauri/icons/**",
+    "src-tauri/target/**",
+    "*.lock",
+    "pnpm-lock.yaml"
+  ]
+}

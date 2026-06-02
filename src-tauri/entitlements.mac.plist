@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Allow the app to access user files when user selects them (good for reveal etc) -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <!-- Print etc if needed -->
+    <key>com.apple.security.print</key>
+    <true/>
+    <!-- We do NOT sandbox the app so it can request Full Disk Access via TCC -->
+    <!-- com.apple.security.app-sandbox is deliberately omitted / false for disk scanner tools -->
+</dict>
+</plist>

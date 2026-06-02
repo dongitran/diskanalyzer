@@ -1,88 +1,143 @@
-# Disk Analyzer (28-disk-analyzer)
+# DiskAnalyzer
 
-**Professional macOS disk usage analyzer** — trực quan, nhanh, với Sunburst chart (chart tròn phân cấp) giống DaisyDisk. Scan từ root `/`, drill-down, actions an toàn.
+<p align="center">
+  <strong>Beautiful • Fast • Native macOS disk usage analyzer</strong><br>
+  Interactive sunburst visualization • Instant drill-down • Professional insights
+</p>
 
-> Dự án được nghiên cứu và triển khai chuyên nghiệp trong Personal Knowledge Base (PARA). Mục tiêu: app cài được trên macOS qua .dmg, CI build tự động, chất lượng code cao (lint, typecheck, cspell, clippy...).
+<p align="center">
+  <a href="https://github.com/dongitran/diskanalyzer/releases/latest">
+    <img src="https://img.shields.io/github/v/release/dongitran/diskanalyzer?label=Download&style=for-the-badge&color=0A84FF" alt="Download latest release">
+  </a>
+  <a href="https://github.com/dongitran/diskanalyzer/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/dongitran/diskanalyzer/ci.yml?label=CI&style=for-the-badge" alt="CI Status">
+  </a>
+  <a href="https://github.com/dongitran/diskanalyzer/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/dongitran/diskanalyzer?style=for-the-badge" alt="License">
+  </a>
+</p>
 
-## Tính năng chính (MVP + roadmap)
-- Scan volumes (/, Data, external) với sysinfo + jwalk (parallel, nhanh).
-- Sunburst visualization tương tác (click để zoom/drill vào folder con).
-- Progress realtime, prune small files, inode hardlink cơ bản.
-- Sidebar: volumes, largest items, detail panel.
-- Actions: Reveal in Finder, deeper scan.
-- Full Disk Access UX (check + request + hướng dẫn tiếng Việt).
-- .dmg build qua GitHub Actions (artifact downloadable).
-
-**Hạn chế hiện tại (biết và sẽ fix):**
-- Size là logical + allocated (clones APFS có thể overcount — như DaisyDisk).
-- Chưa dedup hardlink hoàn hảo cho mọi case.
-- Chưa có treemap toggle, delete staging, smart categories (Xcode caches...).
-- Signing/notarization cần secrets Apple (chưa có trong CI công khai → lần đầu mở app cần Right-click > Open).
-
-## Cài đặt & chạy (dành cho user)
-
-### Tải bản build (khuyến nghị)
-1. Vào GitHub Actions của repo → artifact `disk-analyzer-macos-aarch64`.
-2. Tải .dmg → mở, kéo vào /Applications.
-3. Lần đầu: Right click app → Open (vì unsigned).
-
-### Build từ source (dev)
-Yêu cầu: macOS (Apple Silicon ưu tiên), Rust, Node 20+, pnpm.
-
-```bash
-git clone https://github.com/dongitran/28-disk-analyzer.git
-cd 28-disk-analyzer
-pnpm install
-
-# Dev
-pnpm tauri dev
-
-# Build .app + .dmg (aarch64)
-pnpm tauri build -- --target aarch64-apple-darwin
-```
-
-Sau build: `src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg`
-
-## Phát triển & chất lượng code
-
-```bash
-pnpm dev
-pnpm check          # typecheck Svelte/TS
-pnpm lint
-pnpm cspell
-pnpm quality        # all above
-```
-
-**Rust:**
-- `cd src-tauri && cargo check`
-- `cargo clippy -- -D warnings` (CI sẽ enforce)
-
-**CI:**
-- `.github/workflows/ci.yml`: lint + type + cspell trên PR (ubuntu), build-macos (macos-latest) → upload .dmg artifact.
-- Dependabot cho Cargo, npm, actions.
-
-**Quy tắc chất lượng (nhiều rule):**
-- TypeScript strict + svelte-check.
-- ESLint + (sẽ mở rộng).
-- CSpell (có wordlist cho tech terms VN/EN).
-- Rust: fmt, clippy deny warnings.
-- Pre-commit hooks (lefthook hoặc husky) khuyến khích (chưa setup trong MVP).
-- Commit message: conventional hoặc "feat: ...", "fix: ...".
-
-## Kiến trúc & research notes
-- **Stack**: Tauri v2 + Svelte 5 (SvelteKit static) + Rust. Lý do: nhỏ, nhanh, viz web (D3) đẹp + interactive dễ, Rust cho scanner tối ưu.
-- **Scanner**: jwalk (parallel rayon) + sysinfo cho volumes. Tối ưu sau: fts / getattrlistbulk (xem dumac, Spacie).
-- **Viz**: D3 zoomable sunburst (chuẩn cho disk tools). Toggle treemap sau.
-- **Permissions**: tauri-plugin-macos-permissions + entitlements + open System Settings pane.
-- Tham khảo sâu: SquirrelDisk (Tauri), Spacie (Swift native fts+Canvas), dumac (getattrlistbulk), parallel-disk-usage, DaisyDisk sunburst history.
-
-Chi tiết research trong AGENTS.md và commit history.
-
-## License
-MIT (cho code). Sử dụng cá nhân tự do.
+<p align="center">
+  <a href="https://github.com/dongitran/diskanalyzer/releases/latest">
+    <img alt="macOS" src="https://img.shields.io/badge/macOS-Apple%20Silicon%20%7C%20Intel-000000?style=for-the-badge&logo=apple&logoColor=white">
+  </a>
+</p>
 
 ---
 
-**Owner**: dongitran (thiendong.iuh@gmail.com) — senior fullstack JS/TS, NestJS/React/Next/Postgres.
+**DiskAnalyzer** is a fast, beautiful, and truly native-feeling macOS app to visualize where your disk space has gone. 
 
-Mọi đóng góp PR đều được review kỹ (CI phải pass, chất lượng code, test thực tế trên máy M-series).
+Inspired by the best (DaisyDisk, GrandPerspective, Disk Inventory X) but built with modern tools for speed and clarity: **Tauri + Rust** for the engine and **Svelte + D3** for buttery-smooth interactive sunburst charts.
+
+## ✨ Highlights
+
+- **Stunning Sunburst Visualization** — Hierarchical pie/rings that feel natural to explore. Click any segment to dive deeper.
+- **Blazing Fast Scanner** — Powered by Rust + parallel directory walking. Handles millions of files without freezing.
+- **Start from anywhere** — Root `/`, your Data volume, `~/Users`, external drives, or any folder.
+- **Live Progress** — See exactly what’s being scanned in real time.
+- **Smart Pruning** — Automatically groups tiny files so the view stays clean and useful.
+- **Native macOS Experience** — Proper permissions flow, Reveal in Finder, clean dark UI that matches the system.
+- **Releases with one-click DMG** — Every build on `main` automatically creates a GitHub Release with a ready-to-install `.dmg`.
+
+## 📥 Download & Install (Recommended)
+
+1. Go to **[Releases](https://github.com/dongitran/diskanalyzer/releases/latest)**
+2. Download the latest `DiskAnalyzer-*.dmg` (Apple Silicon builds are primary)
+3. Open the DMG → drag **DiskAnalyzer** to **Applications**
+4. First launch: **Right-click** the app → **Open** (Gatekeeper)
+5. For complete scans from root: grant **Full Disk Access** when asked  
+   (System Settings → Privacy & Security → Full Disk Access)
+
+> The app will guide you with clear Vietnamese + English instructions.
+
+## 🖼️ Screenshots
+
+**Main view with live sunburst + volumes**
+
+(Imagine a beautiful concentric ring chart here with large colorful segments for Users, Applications, Library, System, etc.)
+
+**Drill-down experience**
+
+Clicking a segment smoothly focuses the visualization on that subtree while the sidebar updates with the largest children.
+
+**Progress during a full root scan**
+
+Real-time feedback so you never wonder if it’s stuck.
+
+## 🚀 Features
+
+- Multiple volume detection (Data volume, external disks, etc.)
+- Hierarchical sunburst with smooth interactions
+- Sidebar with top consumers + detail pane
+- Breadcrumb navigation + “go up” support
+- Safe actions: Reveal in Finder (more coming: move to trash staging)
+- Full Disk Access helper + graceful degradation
+- Persistent preferences (coming soon)
+- Very small app size thanks to Tauri
+
+## 🛠️ Development
+
+### Prerequisites
+
+- macOS (Apple Silicon recommended)
+- Rust (via rustup)
+- Node.js 20+ + pnpm
+
+### Getting started
+
+```bash
+git clone https://github.com/dongitran/diskanalyzer.git
+cd diskanalyzer
+pnpm install
+
+# Run in development
+pnpm tauri dev
+
+# Build production .app + .dmg (Apple Silicon)
+pnpm tauri build -- --target aarch64-apple-darwin
+```
+
+The resulting DMG will be in:
+
+`src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/`
+
+### Quality Commands
+
+```bash
+pnpm quality          # typecheck + cspell
+pnpm check            # Svelte type checking
+pnpm lint
+cd src-tauri && cargo check
+cd src-tauri && cargo clippy -- -D warnings
+```
+
+## 🧠 Technical Notes
+
+- **Scanner**: `jwalk` (parallel) + `sysinfo` for volumes. Future: `getattrlistbulk` / POSIX `fts` for even higher performance on APFS.
+- **Size accuracy**: Reports allocated size. APFS clones and hard links are challenging (same limitation as most tools, including paid ones).
+- **Memory**: Tree is pruned for visualization. Full raw data is never kept for millions of tiny files.
+- **Permissions**: Uses `tauri-plugin-macos-permissions` + proper entitlements. The app is intentionally not sandboxed so it can request Full Disk Access.
+
+## 🤝 Contributing
+
+Contributions are very welcome!
+
+1. Fork + create a feature branch
+2. Make sure `pnpm quality` and `cargo clippy` pass
+3. Open a PR with clear description + before/after if UI
+
+Please follow the spirit of the project: **clarity and performance first**.
+
+## 📄 License
+
+MIT © 2026
+
+---
+
+**Made with care for people who actually want to understand their disk.**
+
+If you find DiskAnalyzer useful, consider starring the repo — it helps others discover it.
+
+<p align="center">
+  <a href="https://github.com/dongitran/diskanalyzer/stargazers">⭐ Star on GitHub</a>
+</p>

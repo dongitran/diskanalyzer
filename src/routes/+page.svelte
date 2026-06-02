@@ -44,12 +44,10 @@
     error = null;
 
     try {
-      // Real implementation will stream progress via events or long command
-      const result = await invoke<DiskNode>('scan_directory', { path, maxDepth: 6 });
+      // Real implementation streams via 'scan-progress' events + final return
+      const result = await invoke<DiskNode>('scan_directory', { path, max_depth: 6 });
       scanResult = result;
       selectedNode = result;
-      // Simulate some progress for demo
-      progress = { current_path: 'Scan complete', files_scanned: 124567, bytes_scanned: result.size, percent: 100 };
     } catch (e: any) {
       error = `Scan failed: ${e}`;
     } finally {
@@ -91,6 +89,22 @@
   // Load on mount
   $effect(() => {
     loadVolumes();
+
+    // Listen to live progress from Rust scanner
+    let unlisten: (() => void) | undefined;
+    (async () => {
+      const { listen } = await import('@tauri-apps/api/event');
+      unlisten = await listen<ScanProgress>('scan-progress', (event) => {
+        progress = event.payload;
+        if (progress.percent >= 99) {
+          // final will come from invoke return
+        }
+      });
+    })();
+
+    return () => {
+      unlisten?.();
+    };
   });
 </script>
 

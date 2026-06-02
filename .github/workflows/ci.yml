@@ -72,12 +72,51 @@ jobs:
       - name: Upload .dmg artifact (installable on macOS)
         uses: actions/upload-artifact@v4
         with:
-          name: disk-analyzer-macos-aarch64
+          name: diskanalyzer-macos-aarch64
           path: |
             src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
             src-tauri/target/aarch64-apple-darwin/release/bundle/macos/*.app
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=$(jq -r '.version' src-tauri/tauri.conf.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release with DMG
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}-${{ github.run_number }}
+          name: DiskAnalyzer v${{ steps.get_version.outputs.version }} (build ${{ github.run_number }})
+          body: |
+            ## 🚀 DiskAnalyzer - Professional macOS Disk Usage Visualizer
+
+            Automated build from commit [${{ github.sha }}](https://github.com/dongitran/diskanalyzer/commit/${{ github.sha }})
+
+            ### 📥 Download for macOS
+
+            - **DiskAnalyzer.dmg** (Apple Silicon / M1/M2/M3/M4 recommended)
+
+            ### 🛠️ Installation
+
+            1. Download the `.dmg` from the assets below
+            2. Open it and drag **DiskAnalyzer** to your `/Applications` folder
+            3. First launch: Right-click the app → **Open** (bypass Gatekeeper for unsigned builds)
+            4. For full disk scans from `/`: Grant **Full Disk Access** in  
+               System Settings → Privacy & Security → Full Disk Access
+
+            See the [README](https://github.com/dongitran/diskanalyzer#readme) for features, screenshots, and development instructions.
+
+            > This is a pre-release build. Stable releases will be tagged manually.
+          draft: false
+          prerelease: true
+          files: |
+            src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Optional: also build Intel for completeness (slower, can comment)
       # - name: Build Intel

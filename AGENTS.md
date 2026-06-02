@@ -1,4 +1,4 @@
-# AGENTS.md — 28-disk-analyzer (macOS Disk Usage Visualizer)
+# AGENTS.md — diskanalyzer (macOS Disk Usage Visualizer)
 
 ## Mục đích
 App desktop macOS native-feel, scan dung lượng disk từ root `/`, trực quan với **Sunburst (chart tròn phân cấp)**, drill-down click, actions an toàn. Tương đương DaisyDisk nhưng open / nghiên cứu, buildable, CI .dmg installable.
@@ -13,7 +13,7 @@ App desktop macOS native-feel, scan dung lượng disk từ root `/`, trực qua
 
 ## Cấu trúc project (quan trọng)
 ```
-28-disk-analyzer/
+diskanalyzer/
 ├── src/                  # SvelteKit frontend (TS, Svelte 5 runes)
 │   ├── lib/types.ts
 │   └── routes/+page.svelte   # Main UI (topbar, sidebar volumes, sunburst, details)
@@ -23,7 +23,7 @@ App desktop macOS native-feel, scan dung lượng disk từ root `/`, trực qua
 │   │   ├── main.rs
 │   │   └── scanner.rs    # Tree builder + pruning
 │   ├── Cargo.toml
-│   ├── tauri.conf.json   # productName, identifier=com.dongitran.disk-analyzer, entitlements
+│   ├── tauri.conf.json   # productName, identifier=com.dongitran.diskanalyzer, entitlements
 │   ├── entitlements.mac.plist
 │   └── icons/
 ├── .github/workflows/ci.yml   # lint + build-macos (tauri-action, upload .dmg artifact)
@@ -71,7 +71,7 @@ pnpm quality
 ```
 
 ## Git & remote
-- Repo: github.com/dongitran/28-disk-analyzer (tài khoản dongitran).
+- Repo: github.com/dongitran/diskanalyzer (tài khoản dongitran).
 - Khi push từ local: đảm bảo git config user.name/email = dongitran's.
 - Dùng gh cli (active account dongitran) để tạo repo, release, theo dõi run.
 

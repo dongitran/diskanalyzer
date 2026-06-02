@@ -1,4 +1,4 @@
-// Core types for Disk Analyzer (28-disk-analyzer)
+// Core types for DiskAnalyzer
 // Professional macOS disk usage visualizer
 
 export interface DiskInfo {

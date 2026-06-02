@@ -116,8 +116,8 @@
       <span class="version">v0.1.0</span>
     </div>
     <div class="actions">
-      <button class="btn secondary" on:click={loadVolumes} disabled={isScanning}>Refresh Volumes</button>
-      <button class="btn" on:click={loadDemoData} disabled={isScanning}>Load Demo Data</button>
+      <button class="btn secondary" onclick={loadVolumes} disabled={isScanning}>Refresh Volumes</button>
+      <button class="btn" onclick={loadDemoData} disabled={isScanning}>Load Demo Data</button>
     </div>
   </header>
 
@@ -136,7 +136,7 @@
           <button 
             class="vol-item" 
             class:active={currentScanPath === vol.mount_point}
-            on:click={() => startScan(vol.mount_point)}
+            onclick={() => startScan(vol.mount_point)}
             disabled={isScanning}
           >
             <div class="vol-name">{vol.name}</div>
@@ -149,7 +149,7 @@
 
       <div class="section">
         <h2>Quick Actions</h2>
-        <button class="btn w-full" on:click={() => startScan('/Users')} disabled={isScanning}>
+        <button class="btn w-full" onclick={() => startScan('/Users')} disabled={isScanning}>
           Scan ~/Users (recommended first)
         </button>
         <p class="hint">Full / scan requires <strong>Full Disk Access</strong> permission.</p>
@@ -174,7 +174,7 @@
       <div class="viz-header">
         <div class="breadcrumb">
           {#if scanResult}
-            <span class="crumb" on:click={() => selectNode(scanResult!)}>{scanResult.name}</span>
+            <span class="crumb" onclick={() => selectNode(scanResult!)}>{scanResult.name}</span>
             {#if selectedNode && selectedNode.path !== scanResult.path}
               <span class="sep">›</span>
               <span class="crumb active">{selectedNode.name}</span>
@@ -184,7 +184,7 @@
           {/if}
         </div>
         <div class="viz-controls">
-          <button class="btn small" on:click={() => showSunburstDemo = !showSunburstDemo}>
+          <button class="btn small" onclick={() => showSunburstDemo = !showSunburstDemo}>
             {showSunburstDemo ? 'Hide' : 'Show'} Sunburst Demo
           </button>
         </div>
@@ -201,7 +201,7 @@
                     <div 
                       class="ring-segment" 
                       style="background: hsl({(i * 47) % 360}, 70%, 55%); width: {Math.max(60, Math.min(180, child.size / 2_000_000_000 + 40))}px; height: {Math.max(60, Math.min(180, child.size / 2_000_000_000 + 40))}px;"
-                      on:click={() => selectNode(child)}
+                      onclick={() => selectNode(child)}
                       title="{child.name}: {formatSize(child.size)}"
                     >
                       <span class="seg-label">{child.name}</span>
@@ -209,7 +209,7 @@
                   {/each}
                 {:else}
                   <div class="center">
-                    <div class="center-circle" on:click={() => { if (scanResult) selectNode(scanResult); }}>
+                    <div class="center-circle" onclick={() => { if (scanResult) selectNode(scanResult); }}>
                       <strong>{scanResult ? scanResult.name : 'Root'}</strong><br>
                       <span>{scanResult ? formatSize(scanResult.size) : '—'}</span>
                     </div>
@@ -224,7 +224,7 @@
             <div class="icon">🗂️</div>
             <h3>No scan yet</h3>
             <p>Choose a volume on the left or load demo data to visualize disk usage with sunburst chart.</p>
-            <button class="btn primary" on:click={loadDemoData}>Load Demo Sunburst</button>
+            <button class="btn primary" onclick={loadDemoData}>Load Demo Sunburst</button>
           </div>
         {/if}
       </div>
@@ -244,9 +244,9 @@
         </div>
 
         <div class="actions">
-          <button class="btn" on:click={() => alert('Reveal in Finder (Rust impl)')}>Reveal in Finder</button>
+          <button class="btn" onclick={() => alert('Reveal in Finder (Rust impl)')}>Reveal in Finder</button>
           {#if selectedNode.is_dir}
-            <button class="btn" on:click={() => startScan(selectedNode!.path)}>Scan this folder deeper</button>
+            <button class="btn" onclick={() => startScan(selectedNode!.path)}>Scan this folder deeper</button>
           {/if}
         </div>
 
@@ -254,7 +254,7 @@
           <h3 class="sub">Largest children</h3>
           <ul class="child-list">
             {#each selectedNode.children.sort((a,b) => b.size - a.size).slice(0, 8) as child}
-              <li on:click={() => selectNode(child)}>
+              <li onclick={() => selectNode(child)}>
                 <span class="cname">{child.name}</span>
                 <span class="csize">{formatSize(child.size)}</span>
               </li>

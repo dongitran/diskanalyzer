@@ -1,8 +1,8 @@
 import { defineConfig } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
 
-// @ts-expect-error process is a nodejs global (only in tauri dev context)
-const host = (globalThis as any)?.process?.env?.TAURI_DEV_HOST;
+// process is only available in Tauri dev context (Node), not in browser build
+const host = globalThis?.process?.env?.TAURI_DEV_HOST;
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({

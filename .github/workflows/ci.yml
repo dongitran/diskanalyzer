@@ -70,7 +70,7 @@ jobs:
           args: '--target aarch64-apple-darwin'
 
       - name: Upload .dmg artifact (installable on macOS)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: diskanalyzer-macos-aarch64
           path: |

@@ -36,6 +36,8 @@ jobs:
 
   build-macos:
     runs-on: macos-latest
+    permissions:
+      contents: write   # Required to create GitHub Releases and attach assets
     steps:
       - uses: actions/checkout@v4
 
